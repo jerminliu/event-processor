@@ -1,0 +1,12 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:e="http://apvma.gov.au/event"
+        elementFormDefault="qualified"
+        targetNamespace="http://apvma.gov.au/event">
+    <xs:element name="ccTx">
+        <xs:complexType>
+	        <xs:sequence>
+	            <xs:element name="txnId" type="xs:long"/>
+	        </xs:sequence>                                                                   
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

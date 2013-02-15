@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-twitter="http://www.springframework.org/schema/integration/twitter"
+	xmlns:int-ws="http://www.springframework.org/schema/integration/ws"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sws="http://www.springframework.org/schema/web-services"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/twitter http://www.springframework.org/schema/integration/twitter/spring-integration-twitter.xsd
+		http://www.springframework.org/schema/integration/ws http://www.springframework.org/schema/integration/ws/spring-integration-ws.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
+
+	<context:component-scan base-package="au.gov.apvma.event.processor"/>
+
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#twitter -->
+	<int-twitter:search-inbound-channel-adapter
+		id="twitter" query="springsource OR springintegration OR cloudfoundry OR grails OR rabbitmq"
+		channel="twitterChannel" auto-startup="true">
+		<int:poller fixed-rate="5000" max-messages-per-poll="10" />
+	</int-twitter:search-inbound-channel-adapter>
+	
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#service-activator
+		http://www.eaipatterns.com/MessagingAdapter.html -->
+	<int:service-activator id="twitterServiceActivator"
+		input-channel="twitterChannel" output-channel="nullChannel" ref="twitterService"
+		method="addTwitterMessages" />
+
+	<bean id="twitterService" class="au.gov.apvma.event.processor.service.impl.DefaultTwitterService"/>
+
+	<int:logging-channel-adapter id="logger"
+		level="INFO"
+		expression="'Id:' + payload.id + '; Date:' + payload.createdAt + '; FromUser: ' + payload.fromUser" />
+
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#channel
+		http://www.eaipatterns.com/MessageChannel.html -->
+	<int:channel id="twitterChannel">
+		<int:interceptors>
+			<int:wire-tap channel="logger" />
+		</int:interceptors>
+	</int:channel>
+
+	<bean id="eventService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
+		<property name="schemaCollection" ref="schemaCollection" />
+		<property name="portTypeName" value="Events" />
+		<property name="locationUri" value="/events/"/>
+		<property name="targetNamespace" value="http://apvma.gov.au/event" />
+	</bean>
+	
+	<bean id="schemaCollection" class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
+		<property name="xsds">
+			<list>
+				<value>classpath*:/META-INF/schema/ccTx.xsd</value>
+			</list>
+		</property>
+		<!-- Embed the xsd contents in the wsdl -->
+		<property name="inline" value="true" />
+	</bean>
+	
+	<bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="schema" value="classpath:META-INF/schema/ccTx.xsd" />
+		<property name="contextPath" value="au.gov.apvma.event.processor.model.gen"/>
+	</bean>
+			
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#ws -->
+	<int-ws:inbound-gateway id="inboundGateway" request-channel="eventChannel" marshaller="marshaller" />
+
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#service-activator
+		http://www.eaipatterns.com/MessagingAdapter.html -->
+	<int:service-activator id="olafAdviceServiceActivator" input-channel="eventChannel" output-channel="nullChannel" ref="olafAdviceService" method="registerEvent" />
+	
+	<bean id="olafAdviceService" class="au.gov.apvma.event.processor.service.impl.EventServiceImpl"/>
+	
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#channel
+		http://www.eaipatterns.com/MessageChannel.html -->
+	<int:publish-subscribe-channel id="eventChannel">
+		<int:interceptors>
+			<int:wire-tap channel="logger" />
+		</int:interceptors>
+	</int:publish-subscribe-channel>
+
+	<int:channel id="controlBusChannel" />
+
+	<!-- See also: http://static.springsource.org/spring-integration/reference/htmlsingle/#control-bus
+		http://www.eaipatterns.com/ControlBus.html -->
+	<int:control-bus id="controlBus" input-channel="controlBusChannel" />
+
+</beans>
