@@ -16,8 +16,8 @@
 
     <!-- Processes application requests -->
     <servlet>
-        <servlet-name>appServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-name>eventService</servlet-name>
+        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:META-INF/spring/mvc/servlet-context.xml</param-value>
@@ -30,7 +30,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>appServlet</servlet-name>
+        <servlet-name>eventService</servlet-name>
         <url-pattern>/events/*</url-pattern>
     </servlet-mapping>
 

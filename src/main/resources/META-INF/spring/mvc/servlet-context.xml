@@ -35,7 +35,7 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	<sws:dynamic-wsdl id="eventService" portTypeName="Events" locationUri="/events/" targetNamespace="http://apvma.gov.au/event">                               
+	<sws:dynamic-wsdl id="eventService" portTypeName="Event" locationUri="/events/" targetNamespace="http://apvma.gov.au/event">                               
 		<sws:xsd location="classpath:META-INF/schema/ccTx.xsd"/>                                                  
 	</sws:dynamic-wsdl>
 	

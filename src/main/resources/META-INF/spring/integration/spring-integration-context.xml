@@ -44,7 +44,7 @@
 
 	<bean id="eventService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
 		<property name="schemaCollection" ref="schemaCollection" />
-		<property name="portTypeName" value="Events" />
+		<property name="portTypeName" value="Event" />
 		<property name="locationUri" value="/events/"/>
 		<property name="targetNamespace" value="http://apvma.gov.au/event" />
 	</bean>
