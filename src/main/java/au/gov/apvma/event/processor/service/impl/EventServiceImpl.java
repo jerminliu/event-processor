@@ -9,14 +9,17 @@ import org.springframework.integration.annotation.ServiceActivator;
 
 import au.gov.apvma.event.processor.model.gen.CcTxRequest;
 import au.gov.apvma.event.processor.service.EventService;
+import au.gov.apvma.event.processor.service.EventServiceTest;
 
 /**
+ * A service implementation that handles an event.
+ * 
  * @author peter
  *
  */
 public class EventServiceImpl implements EventService {
 
-	private static final Logger log = LoggerFactory.getLogger(EventService.class);
+	private static final Logger log = LoggerFactory.getLogger(EventServiceTest.class);
 	
 	/* (non-Javadoc)
 	 * @see au.gov.apvma.event.processor.service.EventService#registerEvent()
