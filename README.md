@@ -1,7 +1,7 @@
 Spring Integration WS Sample
 ============================
 
-The ws-inbound-gateway sample is a good start, but somewhat unsatisfying. The message is constructed by hand as a string, and the web service is not self describing.
+Spring's ws-inbound-gateway sample is a good start, but somewhat unsatisfying. The message is constructed by hand as a string, and the web service is not self describing.
 
 This one generates JAXB classes and bindings, and WSDL, from an XSD describing the message. You'll probably want to take the generated WSDL and serve it up statically before you go to prod (to avoid inadvertent interface changes when in BAU), but this sample is to get you going in dev.
 
@@ -25,7 +25,7 @@ You can run the application from:
 
 Usage
 -----
-With the event processor deployed an running, point your favourite ws testing tool (like [soapUI] (http://www.soapui.org/)) at http://localhost:8080/event-processor/events/eventService.wsdl and it should do the rest for you. Note that there is no response from this ws, it is a fire and forget notification. Check the container logs for what went on.
+With the event processor deployed and running, point your favourite ws testing tool (like [soapUI] (http://www.soapui.org/)) at http://localhost:8080/event-processor/events/eventService.wsdl and it should do the rest for you. Note that there is no response from this ws, it is a fire and forget notification. Check the container logs for what went on.
 	
 License
 -------
