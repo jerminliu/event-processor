@@ -8,7 +8,7 @@ This one generates JAXB classes and bindings, and WSDL, from an XSD describing t
 I had to hunt around in both the Integration and Web Services doco to find out the info I needed, so thought this may be worth sharing.
 
 A couple of notes on the XSD:
-* Spring Web Services looks for messages with a suffix of 'Request' or 'Response' and creates operations for them when generating WSDL. You should be able to define your own suffix with requestSuffix and responseSuffix parameters, but that didn't work for me.
+* Spring Web Services looks for messages with a suffix of 'Request' or 'Response' and creates operations for them when generating WSDL. You should be able to define your own suffix with `requestSuffix` and `responseSuffix` parameters, but that didn't work for me.
 * The only message element that I actually wanted was txnId. The others all seem to be required by the framework.
 
 This sample is meant for running Spring Integration inside a servlet container.
